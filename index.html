@@ -12,104 +12,13 @@
             font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
             background-color: #f9f9f9;
             margin: 0;
-            padding: 0;
+            padding: 20px 0;
             color: #222;
-        }
-
-        header {
-            background-color: #ffffff;
-            border-bottom: 1px solid #e0e0e0;
-            padding: 20px 40px;
-        }
-
-        .header-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
-        }
-
-        .header-logo {
-            height: 60px;
-            width: auto;
-            object-fit: contain;
-        }
-
-        .header-text {
-            text-align: left;
-        }
-
-        header h1 {
-            margin: 0;
-            font-size: 28px;
-            letter-spacing: 1px;
-            line-height: 1.2;
-        }
-        header p {
-            margin: 5px 0 0 0;
-            color: #666;
-            font-size: 14px;
-        }
-
-        .search-filter-section {
-            max-width: 1200px;
-            margin: 30px auto 0 auto;
-            padding: 0 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .search-wrapper {
-            width: 100%;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 12px 20px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            box-sizing: border-box;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        .search-input:focus {
-            border-color: #333;
-        }
-
-        .filter-wrapper {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .filter-btn {
-            background: #ffffff;
-            border: 1px solid #ccc;
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.2s ease;
-        }
-
-        .filter-btn:hover {
-            border-color: #333;
-        }
-
-        .filter-btn.active {
-            background: #333;
-            color: #fff;
-            border-color: #333;
         }
 
         .catalog-grid {
             max-width: 1200px;
-            margin: 30px auto 10px auto;
+            margin: 0 auto 10px auto;
             padding: 0 20px;
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -210,33 +119,9 @@
 </head>
 <body>
 
-    <header>
-        <div class="header-container">
-            <img src="logo.png" alt="Logo" class="header-logo">
-            <div class="header-text">
-                <h1>DIGITÁLNÍ SBÍRKY</h1>
-                <p>Katalog 3d modelů sbírkových předmětů</p>
-            </div>
-        </div>
-    </header>
-
-    <section class="search-filter-section">
-        <div class="search-wrapper">
-            <input type="text" id="searchInput" class="search-input" placeholder="Vyhledat předmět (název, lokalita, inv. č., datace...)">
-        </div>
-        <div class="filter-wrapper">
-            <button class="filter-btn active" data-filter="all">Vše</button>
-            <button class="filter-btn" data-filter="archeologie">Archeologie</button>
-            <button class="filter-btn" data-filter="historie">Historie</button>
-            <button class="filter-btn" data-filter="etnografie">Etnografie a regionália</button>
-            <button class="filter-btn" data-filter="prirodoveda">Přírodověda</button>
-            <button class="filter-btn" data-filter="militaria">Militária</button>
-        </div>
-    </section>
-
     <main class="catalog-grid" id="catalogGrid">
 
-        <a href="A50476.html" class="catalog-card" data-category="archeologie" data-name="Bronzová ataše" data-tag="Doba římská" data-meta="Lokalita: Boskovicko Inv. č.: A50476">
+        <a href="A50476.html" class="catalog-card">
             <div class="card-viewer-container">
                 <model-viewer src="A50476-web-glb.glb" poster="A50476-jpeg.jpg" loading="lazy" reveal="interaction" interaction-prompt="none" style="pointer-events: none;"></model-viewer>
             </div>
@@ -247,7 +132,7 @@
             </div>
         </a>
 
-        <a href="A56265.html" class="catalog-card" data-category="archeologie" data-name="Stříbrná spona" data-tag="Doba římská" data-meta="Lokalita: Boskovicko Inv. č.: A56265">
+        <a href="A56265.html" class="catalog-card">
             <div class="card-viewer-container">
                 <model-viewer src="A56265.glb" poster="1.jpg" loading="lazy" reveal="interaction" interaction-prompt="none" style="pointer-events: none;"></model-viewer>
             </div>
@@ -258,7 +143,7 @@
             </div>
         </a>
 
-        <a href="Z277.html" class="catalog-card" data-category="militaria" data-name="Vojenská přezka - Rusko" data-tag="1880-1916" data-meta="Lokalita: Boskovicko Inv. č.: Z277">
+        <a href="Z277.html" class="catalog-card">
             <div class="card-viewer-container">
                 <model-viewer src="Z277.glb" poster="Z277-1.jpg" loading="lazy" reveal="interaction" interaction-prompt="none" style="pointer-events: none;"></model-viewer>
             </div>
@@ -274,43 +159,11 @@
     <div class="pagination-container" id="paginationContainer"></div>
 
     <script>
-        const searchInput = document.getElementById('searchInput');
-        const filterButtons = document.querySelectorAll('.filter-btn');
-        const cards = document.querySelectorAll('.catalog-card');
+        const cards = Array.from(document.querySelectorAll('.catalog-card'));
         const paginationContainer = document.getElementById('paginationContainer');
 
         const itemsPerPage = 24;
         let currentPage = 1;
-        let currentFilter = 'all';
-        let searchText = '';
-        let filteredCards = [];
-
-        function updateCatalog() {
-            filteredCards = [];
-            
-            cards.forEach(card => {
-                const category = card.getAttribute('data-category');
-                const name = card.getAttribute('data-name').toLowerCase();
-                const tag = card.getAttribute('data-tag').toLowerCase();
-                const meta = card.getAttribute('data-meta').toLowerCase();
-                
-                const matchesFilter = (currentFilter === 'all' || category === currentFilter);
-                const matchesSearch = (
-                    name.includes(searchText) || 
-                    tag.includes(searchText) || 
-                    meta.includes(searchText)
-                );
-
-                if (matchesFilter && matchesSearch) {
-                    filteredCards.push(card);
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-
-            renderPagination();
-            showPage(1);
-        }
 
         function showPage(page) {
             currentPage = page;
@@ -319,7 +172,7 @@
 
             const start = (currentPage - 1) * itemsPerPage;
             const end = start + itemsPerPage;
-            const pageItems = filteredCards.slice(start, end);
+            const pageItems = cards.slice(start, end);
 
             pageItems.forEach(card => card.style.display = 'flex');
 
@@ -337,7 +190,7 @@
 
         function renderPagination() {
             paginationContainer.innerHTML = '';
-            const totalPages = Math.ceil(filteredCards.length / itemsPerPage);
+            const totalPages = Math.ceil(cards.length / itemsPerPage);
 
             if (totalPages <= 1) return;
 
@@ -351,21 +204,8 @@
             }
         }
 
-        searchInput.addEventListener('input', (e) => {
-            searchText = e.target.value.toLowerCase().trim();
-            updateCatalog();
-        });
-
-        filterButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                filterButtons.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-                currentFilter = button.getAttribute('data-filter');
-                updateCatalog();
-            });
-        });
-
-        updateCatalog();
+        renderPagination();
+        showPage(1);
     </script>
 
 </body>
