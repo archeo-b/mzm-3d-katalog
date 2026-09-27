@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail: Vojenská přezka - Rusko</title>
+    
+    <script type="module" src="model-viewer.min.js"></script>
+    
+    <style>
+        body { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; background-color: #f5f5f5; margin: 0; padding: 20px; color: #333; }
+        .back-link { display: inline-block; margin-bottom: 20px; color: #666; text-decoration: none; font-weight: bold; }
+        .back-link:hover { color: #000; }
+        
+        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; display: flex; flex-wrap: wrap; gap: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        
+        .media-section { flex: 1 1 500px; display: flex; flex-direction: column; gap: 15px; }
+        
+        .model-box, .photo-wrapper { background: #e9e9e9; height: 450px; border-radius: 6px; overflow: hidden; position: relative; }
+        model-viewer { width: 100%; height: 100%; }
+        
+        .photo-wrapper { cursor: grab; user-select: none; background: #f0f0f0; }
+        .photo-wrapper:active { cursor: grabbing; }
+        
+        .main-photo-view { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: contain; 
+            transform-origin: 0 0; 
+            transition: transform 0.1s ease-out;
+            pointer-events: none; 
+        }
+        
+        .zoom-hint { position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; padding: 4px 8px; font-size: 11px; border-radius: 4px; pointer-events: none; z-index: 10; }
+
+        .gallery { display: flex; gap: 10px; flex-wrap: wrap; }
+        .gallery-thumb { width: 80px; height: 60px; object-fit: cover; border-radius: 4px; cursor: pointer; border: 2px solid transparent; transition: border 0.2s; }
+        .gallery-thumb:hover { border-color: #999; }
+
+        .info-section { flex: 1 1 400px; }
+        h1 { margin-top: 0; font-size: 26px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        td { padding: 12px 0; border-bottom: 1px solid #eee; }
+        td.label { font-weight: bold; color: #666; width: 40%; }
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="back-link">← Zpět do katalogu</a>
+
+    <div class="container">
+        
+        <div class="media-section">
+            
+            <div class="model-box" id="modelBox" style="display: block;">
+                <model-viewer 
+                    id="sponaModel"
+                    src="Z277.glb" 
+                    alt="Přezka z vojenského opasku - Rusko"
+                    camera-controls 
+                    auto-rotate 
+                    environment-image="neutral"
+                    exposure="1.5"
+                    shadow-intensity="0">
+                </model-viewer>
+            </div>
+
+            <div id="photoWrapper" class="photo-wrapper" style="display: none;">
+                <img src="" id="mainPhoto" class="main-photo-view" alt="Detailní foto">
+                <div class="zoom-hint">Použijte kolečko myši pro zoom a tažení pro posun</div>
+            </div>
+
+            <div class="gallery">
+                <div class="gallery-thumb" onclick="show3D()" style="background: #ccc; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; text-transform: uppercase;">3D</div>
+                <img src="Z277-1.jpg" class="gallery-thumb" onclick="changeMedia('Z277-1.jpg')" alt="Náhled 1">
+                <img src="Z277-2.jpg" class="gallery-thumb" onclick="changeMedia('Z277-2.jpg')" alt="Náhled 2">
+                <img src="Z277-3.jpg" class="gallery-thumb" onclick="changeMedia('Z277-3.jpg')" alt="Náhled 3">
+                <img src="Z277-4.jpg" class="gallery-thumb" onclick="changeMedia('Z277-4.jpg')" alt="Náhled 4">
+                <img src="Z277-5.jpg" class="gallery-thumb" onclick="changeMedia('Z277-5.jpg')" alt="Náhled 5">
+                <img src="Z277-6.jpg" class="gallery-thumb" onclick="changeMedia('Z277-6.jpg')" alt="Náhled 6">
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h1>Přezka z vojenského opasku - Rusko</h1>
+            <table>
+                <tr><td class="label">Datace</td><td>1880-1916</td></tr>
+                <tr><td class="label">Lokalita</td><td>Boskovicko</td></tr>
+                <tr><td class="label">Inv. č.</td><td>Z277</td></tr>
+                <tr><td class="label">Materiál</td><td>Mosaz</td></tr>
+            </table>
+
+            <h3 style="margin-top: 25px; margin-bottom: 10px;">Popis</h3>
+            <p style="line-height: 1.6; color: #444; margin: 0;">
+                Přezka vojenského opasku (Rusko). Tělo z lisované mosazi, zespodu záchytný háček a oblouček pro řemen. Vnější část zdobena malým ruským carským znakem - heraldický orel, nesoucí srdeční štítek se sv. Jiřím a na křídlech 8 znaků gubernií. Datace cca 1880-1916. Rozměry 75,6 x 54,4 mm.
+            </p>
+        </div>
+
+    </div>
+
+    <script>
+        const modelBox = document.getElementById('modelBox');
+        const photoWrapper = document.getElementById('photoWrapper');
+        const mainPhoto = document.getElementById('mainPhoto');
+
+        function changeMedia(photoUrl) {
+            modelBox.style.display = 'none';
+            photoWrapper.style.display = 'block'; 
+            mainPhoto.src = photoUrl;
+            resetZoom();
+        }
+
+        function show3D() {
+            photoWrapper.style.display = 'none';
+            modelBox.style.display = 'block';
+        }
+
+        let scale = 1;
+        let pointX = 0;
+        let pointY = 0;
+        let startX = 0;
+        let startY = 0;
+        let isPanning = false;
+
+        function setTransform() {
+            mainPhoto.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
+        }
+
+        photoWrapper.addEventListener('wheel', function(e) {
+            e.preventDefault(); 
+            
+            const xs = (e.offsetX - pointX) / scale;
+            const ys = (e.offsetY - pointY) / scale;
+            const delta = -e.deltaY;
+
+            if (delta > 0) {
+                scale *= 1.2;
+            } else {
+                scale /= 1.2;
+            }
+            
+            scale = Math.min(Math.max(1, scale), 6);
+
+            if (scale === 1) {
+                pointX = 0;
+                pointY = 0;
+            } else {
+                pointX = e.offsetX - xs * scale;
+                pointY = e.offsetY - ys * scale;
+            }
+
+            setTransform();
+        });
+
+        photoWrapper.addEventListener('mousedown', function(e) {
+            if (scale === 1) return; 
+            e.preventDefault();
+            startX = e.offsetX - pointX;
+            startY = e.offsetY - pointY;
+            isPanning = true;
+        });
+
+        window.addEventListener('mousemove', function(e) {
+            if (!isPanning) return;
+            
+            const rect = photoWrapper.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            pointX = x - startX;
+            pointY = y - startY;
+            setTransform();
+        });
+
+        window.addEventListener('mouseup', function() {
+            isPanning = false;
+        });
+
+        function resetZoom() {
+            scale = 1;
+            pointX = 0;
+            pointY = 0;
+            setTransform();
+        }
+    </script>
+
+</body>
+</html>
